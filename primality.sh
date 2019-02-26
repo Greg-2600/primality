@@ -57,9 +57,9 @@ function main() {
   while read candidate; do
     factor_substring $candidate  &
   done | while read candidate; do
-    sum_factor_three $candidate &
+      sum_factor_three $candidate &
     done | while read candidate; do
-      factor_seven $candidate
+        factor_seven $candidate
       done
 }
 
