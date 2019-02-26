@@ -1,64 +1,72 @@
 #!/bin/bash
 
-generator () {
-  seq 0 100000000|sed 's/ /\n/g';
+function generator() {
+# number sequence generator
+  # accept an argument for high and low range
+  low="0"
+  high="1000"
+
+  # generate a space dillemited string of numbers
+  seq $low $high|sed 's/ /\n/g'
 }
 
-function even () {
-  # send odd numbers back	
+function even() {
+# determine if a number is even or odd
+  # 
   if [ $((req%2)) -eq 0 ]; then
-    res=even
+    : # noop
   else
-    res=odd
+    # return odd numbers back
     echo $req
   fi
-  #echo "$req $res"|grep -v even;
 }
 
+function three() {
+# determine if a number is even or odd
 
-function three () {
-  # send number not divisable by three back
-  total=`echo $req|sed 's/ /+/g'|bc -l`;
+  # sum total string
+  total=$(echo $req|sed 's/ /+/g'|bc -l);
 
+  # divide sum by 3 cleanly
   if [ $((total%3)) -eq 0 ]; then
-    res=divisable
+    : # noop
   else
-    res=indivisable
+    # return number not divisable by three back
     echo $req
   fi
-  #echo "$total three"|grep -v three;
-
 }
 
-function five () {
-  # send odd numbers back	
+function five() {
   if [ $((req%5)) -eq 0 ]; then
-    res=divisable
+    : # noop
   else
-    res=indivisable
+    # return numbers not divisable by 5 back
     echo $req
   fi
-  #echo "$req five"|grep -v five;
-
 }
 
-function seven () {
+function seven() {
   if [ $((req%7)) -eq 0 ]; then
-    res=divisable
+    : # noop
   else
-    res=indivisable
+    # return numbers not divisable by seven
     echo $req
   fi
 }
 
 
-stringLast () {
+function stringLast() {
+# match the last character of the string
 
-  candidate="`echo $last|grep -v -E '0|2|4|5|6|8'`";
+  # substring last character
+  last="${req: -1}";
+  # check if last character matchs an even number or a number divisable by 5
+  # NO MATH
+  candidate=$(echo $last|grep -v -E '0|2|4|5|6|8');
+
   if [ -z $candidate ]; then
-    res=notPrime;
+    : # noop
   else 
-    res=maybe;
     echo $req
   fi
 
@@ -68,23 +76,23 @@ workflow () {
 
   while read req; do
     # get the last number of the string
-    last="${req: -1}";
     # even $last
-    stringLast $last $req
+    stringLast $req
   done|
-    while read req; do
-      last="${req: -1}";
-      even $last
-    done|
+    #while read req; do
+    #  last="${req: -1}";
+    #  even $last
+    #done|
       while read req; do
         three $req
       done|
-        while read req; do
-          five $req;
-        done|
+    #    while read req; do
+    #      five $req;
+    #    done|
          while read req; do
            seven $req;
          done
 
 }
 generator|workflow #|wc -l
+#generator|workflow|wc -l
