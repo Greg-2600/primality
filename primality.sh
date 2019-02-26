@@ -49,7 +49,6 @@ function factor_substring() {
     : # noop
   else 
     echo $match # return candidate
-    
   fi
 }
 
@@ -63,4 +62,5 @@ function main() {
       factor_seven $candidate
       done
 }
+
 generator|main
