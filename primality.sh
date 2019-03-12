@@ -1,70 +1,81 @@
 #!/bin/bash
-# The purpose of this program is to demonstrate primality testing while 
-# performing the smallest amount of arithmatic possible.  By Leveraging substring string - 
-# comparisons, and factorial shortcuts, a number can be determined as prime or composite
-# while only actually performing a modulas with prime factorial seven.
 
 function generator() {
 # number sequence generator
-  # high and low range
-  high="2000"
-  low="1000"
+	# high and low range
+	high="1000000000"
+	low="10"
 
-  # generate a string of numbers
-  seq $low $high 
+	# generate a string of numbers
+	seq $low $high 
 }
+
 
 function sum_factor_three() {
 # sum integers in string and modulas
 
-  # sum
-  total=$(echo $candidate|sed 's/ /+/g'|bc -l);
+	# sum
+	total=$(echo $candidate|sed 's/ /+/g'|bc -l)
 
-  # modulas sum by three cleanly
-  if [ $((total%3)) -eq 0 ]; then
-    : # noop
-  else
-    echo $candidate # return string
-  fi
+	# modulas sum by three cleanly
+	if [ $((total%3)) -eq 0 ]; then
+  		:
+	else
+  		echo $candidate
+	fi
 }
+
 
 function factor_seven() {
 # there is not arithmatic shortcut for factoring 7...
 # this is the only function that actually factors the total string!
 
-  if [ $((candidate%7)) -eq 0 ]; then
-    : # noop
-  else
-    echo $candidate # return string
-  fi
+	if [ $((candidate%7)) -eq 0 ]; then
+  		:
+	else
+  		echo $candidate
+	fi
 }
+
 
 function factor_substring() {
 # match the last character of the string
 
-  # substring last character
-  last="${candidate:-1}";
+	# check if last character matches an composite number or a number divisable by 5
+	# no math
+	match=$(echo ${candidate: -1}|grep -v -E '0|5'|grep -v -E '2|4'|grep -v -E '6|8')
 
-  # check if last character matches an composite number or a number divisable by 5
-  # NO MATH
-  match=$(echo $last|grep -v -E '0|2|4|5|6|8');
-
-  if [ -z $match ]; then
-    : # noop
-  else 
-    echo $match # return candidate
-  fi
+	if [ -z $match ]; then
+		:
+	else 
+		echo $candidate
+	fi
 }
+
+
+function factor_primes() {
+# brute force prime factors
+	factors=($(factor $candidate))
+	if [ ${factors[2]} ]; then
+		:
+	else 
+		echo $candidate
+	fi
+}
+
 
 function main() {
 
-  while read candidate; do
-    factor_substring $candidate  &
-  done | while read candidate; do
-      sum_factor_three $candidate &
-    done | while read candidate; do
-        factor_seven $candidate
-      done
+	while read candidate; do
+		factor_substring $candidate &
+	done | while read candidate; do
+		sum_factor_three $candidate
+	done | while read candidate; do
+		factor_seven $candidate
+	done | while read candidate; do
+		factor_primes $candidate
+	done
 }
+
 
 generator|main
