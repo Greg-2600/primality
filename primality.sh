@@ -65,6 +65,12 @@ function factor_primes() {
 
 
 function main() {
+	factor_path=$(which factor)
+	if [ -z $factor_path ]; then
+		echo "factor must be installed and is missing"
+		echo "sudo apt install -y factor; sudo yum install -y factor"
+		exit
+	fi
 
 	while read candidate; do
 		factor_substring $candidate &
