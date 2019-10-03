@@ -2,10 +2,6 @@
 
 function generator() {
 # number sequence generator
-	# high and low range
-	high="1000000000"
-	low="10"
-
 	# generate a string of numbers
 	seq $low $high 
 }
@@ -83,5 +79,13 @@ function main() {
 	done
 }
 
+
+low=$1
+high=$2
+
+[ $# -lt 2 ] && { echo "Usage: $0 low_number high_number"; exit 1; }
+if [ "$high" -lt "$low" ]; then
+	echo "Usage: $0 low_number high_number"; exit 1;
+fi
 
 generator|main
