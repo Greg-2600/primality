@@ -69,7 +69,7 @@ function main() {
 	fi
 
 	while read -r candidate; do
-		factor_substring "$candidate" &
+		factor_substring "$candidate"
 	done | while read -r candidate; do
 		sum_factor_three -r "$candidate"
 	done | while read -r candidate; do
